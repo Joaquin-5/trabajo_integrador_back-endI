@@ -1,0 +1,4 @@
+[2023-03-30 19:10:41] [ INFO ] [Paciente:36] Obteniendo el paciente con el id: 1
+[2023-03-30 19:10:41] [ INFO ] [Paciente:41] Se ha modificado el pacietente con el siguiente id: 1
+[2023-03-30 19:14:02] [ INFO ] [Paciente:36] Obteniendo el paciente con el id: 1
+[2023-03-30 19:14:02] [ INFO ] [Paciente:46] Se ha eliminado el paciente con el siguiente id: 1
