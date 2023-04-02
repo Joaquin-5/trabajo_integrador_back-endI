@@ -18,11 +18,9 @@ public class TurnoService {
 
     private final Logger logger = Logger.getLogger(Turno.class);
 
-    public String guardar(Turno t) {
-        if (repository.save(t) != null) {
-            logger.info("Se ha registrado un turno con el siguiente id: " + t.getId());
-            return "Ok";
-        } else return null;
+    public Turno guardar(Turno t) {
+        logger.info("Se ha registrado un turno con el siguiente id: " + t.getId());
+        return repository.save(t);
     }
 
     public List<Turno> obtenerTodos() {
@@ -35,9 +33,23 @@ public class TurnoService {
         return repository.findById(id);
     }
 
-    public void modificar(Turno t) {
-        logger.info("Se ha modificado el turno con el siguiente id: " + t.getId());
-        repository.save(t);
+    public void modificar(Long id, Turno t) {
+        Optional<Turno> turnoOptional = repository.findById(id);
+        if (turnoOptional.isPresent()){
+            Turno turnoExistente = turnoOptional.get();
+            logger.info("Se ha modificado el turno con el siguiente id: " + t.getId());
+
+            if (t.getFecha() != null){
+                turnoExistente.setFecha(t.getFecha());
+            }
+            if(t.getPaciente() != null){
+                turnoExistente.setPaciente(t.getPaciente());
+            }
+            if(t.getOdontologo() != null){
+                turnoExistente.setOdontologo(t.getOdontologo());
+            }
+            repository.save(turnoExistente);
+        }
     }
 
     public void eliminar(Long id) {

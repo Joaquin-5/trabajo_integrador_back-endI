@@ -29,7 +29,7 @@ public class Paciente {
     @Column(name = "dni", nullable = false)
     private String DNI;
 
-    @Column(name = "fecha_de_alta")
+    @Column(name = "fecha_de_alta", nullable = false)
     private Date fechaDeAlta;
 
     @OneToMany(mappedBy = "paciente")
@@ -41,10 +41,6 @@ public class Paciente {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getNombre() {

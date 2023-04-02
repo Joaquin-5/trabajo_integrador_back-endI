@@ -17,14 +17,11 @@ public class PacienteService {
 
     private final Logger logger = Logger.getLogger(Paciente.class);
 
-    public String guardar(Paciente p) {
+    public Paciente guardar(Paciente p) {
 
         p.setFechaDeAlta(new Date());
-        if (repository.save(p) != null) {
-            logger.info("Se ha registrado el paciente con el siguiente nombre: " + p.getNombre() + " y el siguiente id: " + p.getId());
-            return "Ok";
-        }
-        else return null;
+        logger.info("Se ha registrado el paciente con el siguiente nombre: " + p.getNombre() + " y el siguiente id: " + p.getId());
+        return repository.save(p);
     }
 
     public List<Paciente> obtenerTodos() {
@@ -37,9 +34,29 @@ public class PacienteService {
         return repository.findById(id);
     }
 
-    public void modificar(Paciente p) {
-        logger.info("Se ha modificado el pacietente con el siguiente id: " + p.getId());
-        repository.save(p);
+    public void modificar(Long id, Paciente p) {
+        Optional<Paciente> pacienteOptional = repository.findById(id);
+        if (pacienteOptional.isPresent()){
+            Paciente pacienteExistente = pacienteOptional.get();
+            logger.info("Se ha modificado el pacietente con el siguiente id: " + p.getId());
+
+            if (p.getNombre() != null){
+                pacienteExistente.setNombre(p.getNombre());
+            }
+            if(p.getApellido() != null){
+                pacienteExistente.setApellido(p.getApellido());
+            }
+            if(p.getDNI() != null){
+                pacienteExistente.setDNI(p.getDNI());
+            }
+            if(p.getFechaDeAlta() != null){
+                pacienteExistente.setFechaDeAlta(p.getFechaDeAlta());
+            }
+            if(p.getDomicilio() != null){
+                pacienteExistente.setDomicilio(p.getDomicilio());
+            }
+            repository.save(pacienteExistente);
+        }
     }
 
     public void eliminar(Long id) {

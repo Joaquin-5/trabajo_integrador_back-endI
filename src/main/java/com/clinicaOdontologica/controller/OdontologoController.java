@@ -24,7 +24,7 @@ public class OdontologoController {
         if (service.guardar(o) != null) {
             respuesta = ResponseEntity.ok("El odontólogo fue registrado con éxito");
         } else {
-            respuesta = ResponseEntity.internalServerError().body("Ocurrió un error al registrar un paciente");
+            respuesta = ResponseEntity.internalServerError().body("Ocurrió un error al registrar un odontólogo");
         }
 
         return respuesta;
@@ -46,24 +46,25 @@ public class OdontologoController {
     public ResponseEntity<String> modificar(@PathVariable Long id, @RequestBody Odontologo o) {
         ResponseEntity<String> respuesta = null;
 
-        if (service.obtenerPorId(id) != null) {
-            service.modificar(o);
-            respuesta = ResponseEntity.status(HttpStatus.NO_CONTENT).body("Odontólogo actualizado");
+        if (service.obtenerPorId(id).isPresent()) {
+            service.modificar(id, o);
+            respuesta = ResponseEntity.ok("Odontólogo actualizado");
         } else {
-            respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ocurrió un error al actualizar el odontólogo");
         }
 
         return respuesta;
     }
 
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Long id) {
         ResponseEntity<String> respuesta = null;
 
-        if (service.obtenerPorId(id) != null) {
+        if (service.obtenerPorId(id).isPresent()) {
             service.eliminar(id);
-            respuesta = ResponseEntity.status(HttpStatus.NO_CONTENT).body("Odontólogo eliminado");
+            respuesta = ResponseEntity.ok("Odontólogo eliminado");
         } else {
-            respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ocurrió un error al eliminar el odontólogo");
         }
 
         return respuesta;

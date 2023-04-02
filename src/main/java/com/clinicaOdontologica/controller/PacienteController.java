@@ -42,16 +42,15 @@ public class PacienteController {
         return ResponseEntity.ok(paciente);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<String> modificar(@PathVariable Long id, @RequestBody Paciente p) {
         ResponseEntity<String> respuesta = null;
 
         if (service.obtenerPorId(id).isPresent()) {
-            p.setId(id);
-            service.modificar(p);
-            respuesta = ResponseEntity.status(HttpStatus.NO_CONTENT).body("Paciente actualizado");
+            service.modificar(id, p);
+            respuesta = ResponseEntity.ok("Paciente actualizado");
         } else {
-            respuesta =  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ocurrió un error al actualizar el paciente");;
+            respuesta =  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ocurrió un error al actualizar el paciente");
         }
 
         return respuesta;
@@ -61,11 +60,11 @@ public class PacienteController {
     public ResponseEntity<String> eliminar(@PathVariable Long id) {
         ResponseEntity<String> respuesta = null;
 
-        if (service.obtenerPorId(id) != null) {
+        if (service.obtenerPorId(id).isPresent()) {
             service.eliminar(id);
-            respuesta = ResponseEntity.status(HttpStatus.NO_CONTENT).body("Paciente eliminado");
+            respuesta = ResponseEntity.ok("Paciente eliminado");
         } else {
-            respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ocurrió un error al eliminar el paciente");
         }
 
         return respuesta;

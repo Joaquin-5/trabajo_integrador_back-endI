@@ -24,7 +24,7 @@ public class TurnoController {
         if (service.guardar(t) != null) {
             respuesta = ResponseEntity.ok("El turno fue creado con éxito");
         } else {
-            respuesta = ResponseEntity.internalServerError().body("Ocurrió al crear el turno");
+            respuesta = ResponseEntity.internalServerError().body("Ocurrió un error al crear el turno");
         }
 
         return respuesta;
@@ -47,24 +47,25 @@ public class TurnoController {
     public ResponseEntity<String> modificar(@PathVariable Long id, @RequestBody Turno t) {
         ResponseEntity<String> respuesta = null;
 
-        if (service.obtenerPorId(id) != null) {
-            service.modificar(t);
-            respuesta = ResponseEntity.status(HttpStatus.NO_CONTENT).body("Turno actualizado");
+        if (service.obtenerPorId(id).isPresent()) {
+            service.modificar(id, t);
+            respuesta = ResponseEntity.ok("Turno actualizado");
         } else {
-            respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ocurrió un error al actualizar el turno");
         }
 
         return respuesta;
     }
 
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Long id) {
         ResponseEntity<String> respuesta = null;
 
-        if (service.obtenerPorId(id) != null) {
+        if (service.obtenerPorId(id).isPresent()) {
             service.eliminar(id);
-            respuesta = ResponseEntity.status(HttpStatus.NO_CONTENT).body("Turno eliminado");
+            respuesta = ResponseEntity.ok("Turno eliminado");
         } else {
-            respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ocurrió un error al eliminar el turno");
         }
 
         return respuesta;
