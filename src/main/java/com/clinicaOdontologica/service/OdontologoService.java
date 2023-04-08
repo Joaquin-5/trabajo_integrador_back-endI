@@ -1,7 +1,7 @@
 package com.clinicaOdontologica.service;
 
+import com.clinicaOdontologica.exceptions.BadRequestException;
 import com.clinicaOdontologica.persistance.entities.Odontologo;
-import com.clinicaOdontologica.persistance.entities.Paciente;
 import com.clinicaOdontologica.persistance.repository.OdontologoRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,10 @@ public class OdontologoService {
 
     private final Logger logger = Logger.getLogger(Odontologo.class);
 
-    public Odontologo guardar(Odontologo o) {
-        logger.info("Se ha registrado el odontólogo con el siguiente nombre: " + o.getNombre() + " y el siguiente id: " + o.getId());
+    public Odontologo guardar(Odontologo o) throws BadRequestException {
+        if (repository.findOdontologoByMatricula(o.getMatricula()) != null)
+            throw new BadRequestException("Ya existe un odontólogo con esta matrícula: " + o.getMatricula());
+        logger.info("Se ha registrado el odontólogo con el siguiente nombre: " + repository.save(o).getNombre() + " y el siguiente id: " + repository.save(o).getId());
         return repository.save(o);
     }
 
@@ -28,11 +30,14 @@ public class OdontologoService {
     }
 
     public Optional<Odontologo> obtenerPorId(Long id) {
-        logger.info("Obteniendo el odontólogo con el id: " + id);
-        return repository.findById(id);
+        if (repository.findById(id).isPresent()) {
+            logger.info("Obteniendo el odontólogo con el id: " + id);
+            return repository.findById(id);
+        }
+        return null;
     }
 
-    public void modificar(Long id, Odontologo o) {
+    public boolean modificar(Long id, Odontologo o) {
         Optional<Odontologo> odontologoOptional = repository.findById(id);
         if (odontologoOptional.isPresent()){
             Odontologo odontologoExistente = odontologoOptional.get();
@@ -47,13 +52,18 @@ public class OdontologoService {
             if(o.getMatricula() != null){
                 odontologoExistente.setMatricula(o.getMatricula());
             }
-
             repository.save(odontologoExistente);
+            return true;
         }
+        return false;
     }
 
-    public void eliminar(Long id) {
-        logger.info("Se ha eliminado el odontólogo con el siguiente id: " + id);
-        repository.deleteById(id);
+    public boolean eliminar(Long id) {
+        if (repository.findById(id).isPresent()) {
+            logger.info("Se ha eliminado el odontólogo con el siguiente id: " + id);
+            repository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

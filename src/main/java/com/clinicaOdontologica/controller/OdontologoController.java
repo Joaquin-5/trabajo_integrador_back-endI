@@ -1,9 +1,9 @@
 package com.clinicaOdontologica.controller;
 
+import com.clinicaOdontologica.exceptions.BadRequestException;
 import com.clinicaOdontologica.persistance.entities.Odontologo;
 import com.clinicaOdontologica.service.OdontologoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,27 +12,31 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/odontologos")
+@CrossOrigin(origins = "http://127.0.0.1:5500/")
 public class OdontologoController {
 
     @Autowired
     OdontologoService service;
 
     @PostMapping
-    public ResponseEntity<String> registrar(@RequestBody Odontologo o) {
+    public ResponseEntity<String> registrar(@RequestBody Odontologo o) throws BadRequestException {
         ResponseEntity<String> respuesta = null;
 
         if (service.guardar(o) != null) {
             respuesta = ResponseEntity.ok("El odontólogo fue registrado con éxito");
-        } else {
-            respuesta = ResponseEntity.internalServerError().body("Ocurrió un error al registrar un odontólogo");
-        }
+        } else
+            respuesta = ResponseEntity.badRequest().body("Ocurrió un error al registrar un odontólogo");
 
         return respuesta;
     }
 
     @GetMapping
     public ResponseEntity<List<Odontologo>> obtenerTodos() {
-        return ResponseEntity.ok(service.obtenerTodos());
+        ResponseEntity<List<Odontologo>> respuesta = null;
+        if (service.obtenerTodos() != null)
+            return ResponseEntity.status(200).body(service.obtenerTodos());
+
+        return respuesta;
     }
 
     @GetMapping("/{id}")
@@ -48,9 +52,9 @@ public class OdontologoController {
 
         if (service.obtenerPorId(id).isPresent()) {
             service.modificar(id, o);
-            respuesta = ResponseEntity.ok("Odontólogo actualizado");
+            respuesta = ResponseEntity.ok("Odontólogo actualizado con éxito");
         } else {
-            respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ocurrió un error al actualizar el odontólogo");
+            respuesta = ResponseEntity.badRequest().body("Ocurrió un error al actualizar el odontólogo");
         }
 
         return respuesta;
@@ -62,11 +66,14 @@ public class OdontologoController {
 
         if (service.obtenerPorId(id).isPresent()) {
             service.eliminar(id);
-            respuesta = ResponseEntity.ok("Odontólogo eliminado");
-        } else {
-            respuesta = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ocurrió un error al eliminar el odontólogo");
-        }
+            respuesta = ResponseEntity.ok("Odontólogo eliminado con éxito");
+        } else respuesta = ResponseEntity.badRequest().body("Ocurrió un error al eliminar el odontólogo");
 
         return respuesta;
+    }
+
+    @ExceptionHandler({BadRequestException.class})
+    public ResponseEntity<String> procesarErrorBadRequest(BadRequestException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }

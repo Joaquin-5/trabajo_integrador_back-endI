@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "domicilios")
 public class Domicilio {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -23,6 +23,21 @@ public class Domicilio {
     private String provincia;
 
     public Domicilio() {
+    }
+
+    public Domicilio(String calle, String numero, String localidad, String provincia) {
+        this.calle = calle;
+        this.numero = numero;
+        this.localidad = localidad;
+        this.provincia = provincia;
+    }
+
+    public Domicilio(Long id, String calle, String numero, String localidad, String provincia) {
+        this.id = id;
+        this.calle = calle;
+        this.numero = numero;
+        this.localidad = localidad;
+        this.provincia = provincia;
     }
 
     public Long getId() {

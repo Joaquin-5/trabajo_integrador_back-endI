@@ -9,21 +9,34 @@ import java.time.LocalDateTime;
 public class Turno {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     @Column(name = "fecha", nullable = false)
     private LocalDateTime fecha;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "odontologo_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "odontologo_id", nullable = false)
     private Odontologo odontologo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "paciente_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
 
     public Turno() {
+    }
+
+    public Turno(LocalDateTime fecha, Odontologo odontologo, Paciente paciente) {
+        this.fecha = fecha;
+        this.odontologo = odontologo;
+        this.paciente = paciente;
+    }
+
+    public Turno(Long id, LocalDateTime fecha, Odontologo odontologo, Paciente paciente) {
+        this.id = id;
+        this.fecha = fecha;
+        this.odontologo = odontologo;
+        this.paciente = paciente;
     }
 
     public Long getId() {
@@ -52,5 +65,15 @@ public class Turno {
 
     public void setPaciente(Paciente paciente) {
         this.paciente = paciente;
+    }
+
+    @Override
+    public String toString() {
+        return "Turno{" +
+                "id=" + id +
+                ", fecha=" + fecha +
+                ", odontologo=" + odontologo +
+                ", paciente=" + paciente +
+                '}';
     }
 }

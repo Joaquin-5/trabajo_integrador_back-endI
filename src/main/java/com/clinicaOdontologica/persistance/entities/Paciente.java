@@ -1,7 +1,6 @@
 package com.clinicaOdontologica.persistance.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -11,7 +10,7 @@ import java.util.Set;
 @Table(name = "pacientes")
 public class Paciente {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -21,9 +20,8 @@ public class Paciente {
     @Column(name = "apellido", nullable = false)
     private String apellido;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "domicilio_id", referencedColumnName = "id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Domicilio domicilio;
 
     @Column(name = "dni", nullable = false)
@@ -37,6 +35,22 @@ public class Paciente {
     private Set<Turno> turnos;
 
     public Paciente() {
+    }
+
+    public Paciente(String nombre, String apellido, Domicilio domicilio, String DNI) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.domicilio = domicilio;
+        this.DNI = DNI;
+    }
+
+    public Paciente(Long id, String nombre, String apellido, Domicilio domicilio, String DNI, Date fechaDeAlta) {
+        this.id = id;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.domicilio = domicilio;
+        this.DNI = DNI;
+        this.fechaDeAlta = fechaDeAlta;
     }
 
     public Long getId() {
@@ -81,5 +95,18 @@ public class Paciente {
 
     public void setFechaDeAlta(Date fechaDeAlta) {
         this.fechaDeAlta = fechaDeAlta;
+    }
+
+    @Override
+    public String toString() {
+        return "Paciente{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", domicilio=" + domicilio +
+                ", DNI='" + DNI + '\'' +
+                ", fechaDeAlta=" + fechaDeAlta +
+                ", turnos=" + turnos +
+                '}';
     }
 }

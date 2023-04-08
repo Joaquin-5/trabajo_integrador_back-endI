@@ -10,7 +10,7 @@ import java.util.Set;
 public class Odontologo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -28,6 +28,20 @@ public class Odontologo {
     private Set<Turno> turnos;
 
     public Odontologo() {
+    }
+
+    public Odontologo(String nombre, String apellido, String matricula) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.matricula = matricula;
+    }
+
+    public Odontologo(Long id, String nombre, String apellido, String matricula, Set<Turno> turnos) {
+        this.id = id;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.matricula = matricula;
+        this.turnos = turnos;
     }
 
     public Long getId() {
@@ -56,5 +70,16 @@ public class Odontologo {
 
     public void setMatricula(String matricula) {
         this.matricula = matricula;
+    }
+
+    @Override
+    public String toString() {
+        return "Odontologo{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", matricula='" + matricula + '\'' +
+                ", turnos=" + turnos +
+                '}';
     }
 }

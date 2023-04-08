@@ -1,7 +1,5 @@
 package com.clinicaOdontologica.service;
 
-import com.clinicaOdontologica.persistance.entities.Odontologo;
-import com.clinicaOdontologica.persistance.entities.Paciente;
 import com.clinicaOdontologica.persistance.entities.Turno;
 import com.clinicaOdontologica.persistance.repository.TurnoRepository;
 import org.apache.log4j.Logger;
@@ -29,11 +27,14 @@ public class TurnoService {
     }
 
     public Optional<Turno> obtenerPorId(Long id) {
-        logger.info("Obteniendo un turno con el id: " + id);
-        return repository.findById(id);
+        if (repository.findById(id).isPresent()) {
+            logger.info("Se obtuvo un turno con el id: " + id);
+            return repository.findById(id);
+        }
+        return null;
     }
 
-    public void modificar(Long id, Turno t) {
+    public boolean modificar(Long id, Turno t) {
         Optional<Turno> turnoOptional = repository.findById(id);
         if (turnoOptional.isPresent()){
             Turno turnoExistente = turnoOptional.get();
@@ -49,11 +50,17 @@ public class TurnoService {
                 turnoExistente.setOdontologo(t.getOdontologo());
             }
             repository.save(turnoExistente);
+            return true;
         }
+        return false;
     }
 
-    public void eliminar(Long id) {
-        logger.info("Se ha eliminado el turno con el siguiente id: " + id);
-        repository.deleteById(id);
+    public boolean eliminar(Long id) {
+        if (repository.findById(id).isPresent()) {
+            logger.info("Se ha eliminado el turno con el siguiente id: " + id);
+            repository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
